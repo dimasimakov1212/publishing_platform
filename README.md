@@ -20,3 +20,15 @@
 - код оформлен согласно pep8
 - оформлен Readme файл
 
+
+### Создание суперпользователя
+
+В файле .env задать значение пароля для суперпользователя SUPER_USER_PASSWORD
+
+В файле users/management/commands/create_super_user.py 
+задать user_email, first_name, last_name
+
+Выполнить команду
+```commandline
+python3 manage.py create_super_user
+```
