@@ -20,15 +20,25 @@
 - код оформлен согласно pep8
 - оформлен Readme файл
 
+### Создание базы данных
+
+Выполнить команды
+```commandline
+sudo -i -u postgres psql
+```
+После входа в postgres создаем БД
+```commandline
+CREATE DATABASE publishing_platform;
+```
 
 ### Создание суперпользователя
 
 В файле .env задать значение пароля для суперпользователя SUPER_USER_PASSWORD
 
-В файле users/management/commands/create_super_user.py 
-задать user_email, first_name, last_name
-
 Выполнить команду
 ```commandline
 python3 manage.py create_super_user
 ```
+
+Для входа в админку использовать имя **admin@dima.pro**
+и пароль, котрый указали в переменной SUPER_USER_PASSWORD
