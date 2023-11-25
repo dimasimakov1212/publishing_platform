@@ -11,6 +11,6 @@ def main_page_view(request):
 
     context = {
         'title': 'Главная',
-        'title_2': 'сервис создания рассылок',
+        'title_2': 'Сервис интересного контента',
     }
     return render(request, 'publications/homepage.html', context)
