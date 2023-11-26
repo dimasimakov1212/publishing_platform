@@ -19,6 +19,21 @@ class UserRegisterForm(UserCreationForm):
             field.widget.attrs['class'] = 'form-control'
 
 
+class UserEnterCodeForm(forms.ModelForm):
+    """ Форма регистрации пользователя """
+    verify_code = forms.CharField(label='Регистрация', help_text='Код подтверждения')
+
+    class Meta:
+        model = User
+        fields = ('verify_code',)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+
+
 class UserProfileForm(UserChangeForm):
     """
     Форма профиля пользователя

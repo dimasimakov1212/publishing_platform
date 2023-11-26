@@ -2,10 +2,7 @@ from django.shortcuts import render
 
 
 def main_page_view(request):
-    """
-    Выводит главную страницу
-    :return:
-    """
+    """ Выводит главную страницу """
 
     # blogs = Blog.objects.filter(blog_is_active=True)  # Получаем все опубликованные статьи
 
