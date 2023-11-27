@@ -16,4 +16,4 @@ def users_list():
     users = User.objects.all()
 
     for user in users:
-        print(f"{user.id} - {user.user_email} - {user.verify_code}")
+        print(f"{user.id} - {user.user_email}")
