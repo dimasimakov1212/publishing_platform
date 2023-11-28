@@ -14,6 +14,7 @@ class Command(BaseCommand):
             user_email='admin@dima.pro',
             first_name='Admin',
             last_name='Dima',
+            is_active=True,
             is_staff=True,
             is_superuser=True
         )

@@ -5,12 +5,10 @@ from django.db import IntegrityError
 from django.shortcuts import render, redirect
 
 from django.urls import reverse_lazy
-from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views import View
-from django.views.generic import CreateView, TemplateView
+from django.views.generic import CreateView, TemplateView, UpdateView
 
-from users.forms import UserRegisterForm, UserEnterCodeForm
+from users.forms import UserRegisterForm, UserEnterCodeForm, UserProfileForm
 from users.models import User
 from users.services import code_generator, users_list, send_sms
 
@@ -119,31 +117,36 @@ class UserAlreadyExistView(TemplateView):
 def user_authentication(request):
     """ Регистрация нового пользователя """
 
-    form = UserRegisterForm  # класс-метод формы регистрации
+    form = UserRegisterForm(request.POST)  # класс-метод формы регистрации
 
     try:
         # получаем данные пользователя
         if request.method == 'POST':
-            username = request.POST.get('user_email')
-            user_email = request.POST.get('user_email')
-            password = request.POST.get('password1')
-            user_phone = request.POST.get('user_phone')
 
-            # аутентификация пользователя
-            user = authenticate(request, username=username, user_email=user_email, password=password,
-                                user_phone=user_phone)
-            # создаем объект пользователя
-            user = User.objects.create(user_email=user_email, password=password, user_phone=user_phone)
+            if form.is_valid():
+                user = form.save()
+                # username = request.POST.get('user_email')
+                # user_email = request.POST.get('user_email')
+                # password = request.POST.get('password1')
+                # user_phone = request.POST.get('user_phone')
 
-            users_list()
+                # аутентификация пользователя
+                # user = authenticate(request, username=username, user_email=user_email, password=password,
+                #                     user_phone=user_phone)
+                # # создаем объект пользователя
+                # user = User.objects.create(user_email=user_email, password=password, user_phone=user_phone)
+                user.set_password(form.cleaned_data['password1'])
+                user.save()
 
-            # получаем случайно сгенерированный код и записываем его в кэш сессии
-            request.session['verify_code'] = code_generator()
+                users_list()
 
-            if user is not None:
-                request.session['pk'] = user.pk  # заносим в кэш сессии id текущего пользователя
+                # получаем случайно сгенерированный код и записываем его в кэш сессии
+                request.session['verify_code'] = code_generator()
 
-                return redirect('users:code_entering')  # перенаправляем на форму ввода кода верификации
+                if user is not None:
+                    request.session['pk'] = user.pk  # заносим в кэш сессии id текущего пользователя
+
+                    return redirect('users:code_entering')  # перенаправляем на форму ввода кода верификации
 
     except IntegrityError:
         return redirect('users:user_already_exist')  # перенаправляем на форму, что пользователь уже существует
@@ -184,3 +187,23 @@ def verify_view(request):
                 return redirect('users:user_confirmation_failed')  # выводим сообщение об ошибке регистрации
 
     return render(request, 'users/code_entering.html', {'form': form})
+
+
+class ProfileView(UpdateView):
+    """ Контроллер профиля пользователя """
+    model = User
+    form_class = UserProfileForm
+    success_url = reverse_lazy('publications:home')
+
+    def get_object(self, queryset=None):
+        """ Получаем текущего пользователя """
+        return self.request.user
+
+    def get_context_data(self, **kwargs):
+        """ Выводит контекстную информацию в шаблон """
+        context = super(ProfileView, self).get_context_data(**kwargs)
+
+        context['title'] = 'Профиль'
+        context['title_2'] = 'редактирование профиля пользователя'
+
+        return context
