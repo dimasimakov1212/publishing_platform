@@ -12,7 +12,7 @@ from django.views.generic import CreateView, TemplateView
 
 from users.forms import UserRegisterForm, UserEnterCodeForm
 from users.models import User
-from users.services import code_generator, users_list
+from users.services import code_generator, users_list, send_sms
 
 
 # ----------- регистрация и валидация нового пользователя сделана через функции -----------
@@ -159,11 +159,14 @@ def verify_view(request):
     pk = request.session.get('pk')  # получаем из кэша сессии id текущего пользователя
     verify_code = request.session.get('verify_code')  # получаем из кэша сессии код верификации
 
-    print(verify_code)
+    if pk:
+        user = User.objects.get(pk=pk)  # получаем пользователя
 
-    if request.method == 'POST':
-        if pk:
-            user = User.objects.get(pk=pk)  # получаем пользователя
+        send_sms(verify_code, user.user_phone)  # отправляем смс с кодом верификации пользователю
+
+        print(verify_code)
+
+        if request.method == 'POST':
 
             code = request.POST.get('verify_code')  # получаем код введенный пользователем
 
