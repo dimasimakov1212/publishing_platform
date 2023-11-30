@@ -22,17 +22,19 @@
                 <svg class="bi me-2" width="16" height="16">
                     <use xlink:href="#speedometer2"/>
                 </svg>
-                Категории
+                Публикации пользователей
             </a>
         </li>
+        {% if request.user.is_authenticated %}
         <li>
             <a href="#" class="nav-link text-white">
                 <svg class="bi me-2" width="16" height="16">
                     <use xlink:href="#table"/>
                 </svg>
-                Заказы
+                Мои публикации
             </a>
         </li>
+        {% endif %}
         <li>
             <a href="#" class="nav-link text-white">
                 <svg class="bi me-2" width="16" height="16">

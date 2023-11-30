@@ -118,6 +118,7 @@ def user_authentication(request):
     """ Регистрация нового пользователя """
 
     form = UserRegisterForm(request.POST)  # класс-метод формы регистрации
+    data = {'form': form, 'title': 'Регистрация'}  # контекстная информация
 
     try:
         # получаем данные пользователя
@@ -151,13 +152,14 @@ def user_authentication(request):
     except IntegrityError:
         return redirect('users:user_already_exist')  # перенаправляем на форму, что пользователь уже существует
 
-    return render(request, 'users/register.html', {'form': form})
+    return render(request, 'users/register.html', context=data)
 
 
 def verify_view(request):
     """ Верификация пользователя через подтверждение кода верификации """
 
     form = UserEnterCodeForm  # класс-метод формы регистрации
+    data = {'form': form, 'title': 'Подтверждение'}  # контекстная информация
 
     pk = request.session.get('pk')  # получаем из кэша сессии id текущего пользователя
     verify_code = request.session.get('verify_code')  # получаем из кэша сессии код верификации
@@ -165,7 +167,7 @@ def verify_view(request):
     if pk:
         user = User.objects.get(pk=pk)  # получаем пользователя
 
-        send_sms(verify_code, user.user_phone)  # отправляем смс с кодом верификации пользователю
+        # send_sms(verify_code, user.user_phone)  # отправляем смс с кодом верификации пользователю
 
         print(verify_code)
 
@@ -186,7 +188,7 @@ def verify_view(request):
                 user.delete()
                 return redirect('users:user_confirmation_failed')  # выводим сообщение об ошибке регистрации
 
-    return render(request, 'users/code_entering.html', {'form': form})
+    return render(request, 'users/code_entering.html', context=data)
 
 
 class ProfileView(UpdateView):

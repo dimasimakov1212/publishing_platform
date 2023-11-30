@@ -34,10 +34,11 @@ class UserEnterCodeForm(forms.ModelForm):
 
 
 class UserProfileForm(UserChangeForm):
-    """ Форма профиля пользователя """
+    """ Форма редактирования профиля пользователя """
+
     class Meta:
         model = User
-        fields = ('user_email', 'first_name', 'last_name', 'user_phone', 'user_city', 'user_avatar')
+        fields = ('user_email', 'first_name', 'last_name', 'user_phone', 'user_city', 'user_avatar', 'user_description')
 
     def __init__(self, *args, **kwargs):
         """ Дополнительные настройки """
