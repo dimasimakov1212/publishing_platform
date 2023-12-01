@@ -4,7 +4,7 @@
 {% block content %}
 
 {% for publication in object_list %}
-<div class="col-lg-5 col-md- ">
+<div class="col-lg-5 col-md-8 ">
     <div class="row text-center">
         <div class="col-12">
             <div class="card mb-6 rounded-3 shadow-sm">
@@ -24,12 +24,12 @@
                             <br>
                             <div class="col">
                                 <a type="button" class="btn btn-lg btn-outline-success"
-                                   href="#">Читать</a>
+                                   href="{% url 'publications:publication_detail' pk=publication.id %}">Читать</a>
                                 {% if request.user == publication.publication_owner %}
                                 <a type="button" class="btn btn-lg btn-outline-warning"
-                                   href="#">Редактировать</a>
+                                   href="{% url 'publications:publication_edit' pk=publication.id %}">Редактировать</a>
                                 <a type="button" class="btn btn-lg btn-outline-danger"
-                                   href="#">Удалить</a>
+                                   href="{% url 'publications:publication_delete' pk=publication.id %}">Удалить</a>
                                 {% endif %}
                             </div>
                         </div>

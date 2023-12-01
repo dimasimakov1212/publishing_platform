@@ -2,7 +2,7 @@ from random import sample
 
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 
 from publications.forms import PublicationForm
 from publications.models import Publication
@@ -86,4 +86,58 @@ class PublicationCreateView(CreateView):
         context = super(PublicationCreateView, self).get_context_data(**kwargs)
         context['title'] = 'Публикация'
         context['title_2'] = 'создание публикации'
+        return context
+
+
+class PublicationDetailView(DetailView):
+    """ Выводит информаццию о статье """
+
+    model = Publication
+
+    def get_context_data(self, **kwargs):
+        """ Выводит контекстную информацию в шаблон """
+
+        context = super(PublicationDetailView, self).get_context_data(**kwargs)
+        context['title'] = 'Просмотр'
+        context['title_2'] = 'Просмотр публикации'
+        return context
+
+
+class PublicationUpdateView(UpdateView):
+    """ Выводит форму редактирования статьи """
+
+    model = Publication
+    form_class = PublicationForm
+    success_url = reverse_lazy('publications:publications_list')
+
+    def form_valid(self, form):
+        """ Реализует сохранение формы редактирования публикации """
+
+        if form.is_valid():
+            new_article = form.save()
+            new_article.save()
+
+        return super().form_valid(form)
+
+    def get_context_data(self, **kwargs):
+        """ Выводит контекстную информацию в шаблон """
+
+        context = super(PublicationUpdateView, self).get_context_data(**kwargs)
+        context['title'] = 'Редактирование'
+        context['title_2'] = 'Редактирование публикации'
+        return context
+
+
+class PublicationDeleteView(DeleteView):
+    """ Выводит форму удаления статьи """
+
+    model = Publication
+    success_url = reverse_lazy('publications:publications_list')
+
+    def get_context_data(self, **kwargs):
+        """ Выводит контекстную информацию в шаблон """
+
+        context = super(PublicationDeleteView, self).get_context_data(**kwargs)
+        context['title'] = 'Удаление'
+        context['title_2'] = 'Удаление публикации'
         return context
