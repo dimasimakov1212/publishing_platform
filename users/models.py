@@ -16,7 +16,7 @@ class User(AbstractUser):
     user_description = models.CharField(max_length=150, verbose_name='Краткое описание', blank=True, null=True)
     is_active = models.BooleanField(choices=VERSION_CHOICES, default=False, verbose_name='Статус пользователя')
     user_subscriptions = models.ManyToManyField(Publication, verbose_name='подписка на публикации',
-                                                blank=True, null=True)
+                                                blank=True)
 
     USERNAME_FIELD = "user_email"
     REQUIRED_FIELDS = []

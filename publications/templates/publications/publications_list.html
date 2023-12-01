@@ -1,0 +1,45 @@
+{% extends 'publications/homepage.html' %}
+
+
+{% block content %}
+
+{% for publication in object_list %}
+<div class="col-lg-5 col-md- ">
+    <div class="row text-center">
+        <div class="col-12">
+            <div class="card mb-6 rounded-3 shadow-sm">
+                <div class="card-header py-3">
+                    <h5 class="my-0 fw-normal">Публикация - {{ publication.publication_title }}
+                        ({{ publication.publication_text|truncatechars:50 }})</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <button class="w-100 btn btn-primary" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapseExample{{ forloop.counter }}" aria-expanded="false"
+                                aria-controls="collapseExample">
+                            Развернуть/свернуть
+                        </button>
+                        <div class="collapse" id="collapseExample{{ forloop.counter }}">
+
+                            <br>
+                            <div class="col">
+                                <a type="button" class="btn btn-lg btn-outline-success"
+                                   href="#">Читать</a>
+                                {% if request.user == publication.publication_owner %}
+                                <a type="button" class="btn btn-lg btn-outline-warning"
+                                   href="#">Редактировать</a>
+                                <a type="button" class="btn btn-lg btn-outline-danger"
+                                   href="#">Удалить</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+{% endfor %}
+
+{% endblock %}

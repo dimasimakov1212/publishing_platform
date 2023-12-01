@@ -27,11 +27,19 @@
         </li>
         {% if request.user.is_authenticated %}
         <li>
-            <a href="#" class="nav-link text-white">
+            <a href="{% url 'publications:publications_list' %}" class="nav-link text-white">
                 <svg class="bi me-2" width="16" height="16">
                     <use xlink:href="#table"/>
                 </svg>
                 Мои публикации
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'publications:create_publication' %}" class="nav-link text-white">
+                <svg class="bi me-2" width="16" height="16">
+                    <use xlink:href="#grid"/>
+                </svg>
+                Создать публикацию
             </a>
         </li>
         {% endif %}

@@ -6,7 +6,7 @@ from django.shortcuts import render, redirect
 
 from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import CreateView, TemplateView, UpdateView
+from django.views.generic import CreateView, TemplateView, UpdateView, ListView
 
 from users.forms import UserRegisterForm, UserEnterCodeForm, UserProfileForm
 from users.models import User
@@ -193,6 +193,7 @@ def verify_view(request):
 
 class ProfileView(UpdateView):
     """ Контроллер профиля пользователя """
+
     model = User
     form_class = UserProfileForm
     success_url = reverse_lazy('publications:home')
@@ -207,5 +208,23 @@ class ProfileView(UpdateView):
 
         context['title'] = 'Профиль'
         context['title_2'] = 'редактирование профиля пользователя'
+
+        return context
+
+
+class UserListView(ListView):
+    """ Выводит список пользователей """
+
+    model = User
+    # permission_required = 'users.view_user'
+    template_name = 'users/user_list.html'
+
+    def get_context_data(self, **kwargs):
+        """ Выводит контекстную информацию в шаблон """
+
+        context = super(UserListView, self).get_context_data(**kwargs)
+
+        context['title'] = 'Пользователи'
+        context['title_2'] = 'интересное от наших пользователей'
 
         return context
