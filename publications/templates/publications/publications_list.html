@@ -13,8 +13,13 @@
                         ({{ publication.publication_text|truncatechars:50 }})</h5>
                 </div>
                 <small class="text-body-secondary">
-                    Автор публикации - {{ publication.publication_owner }}</small>
-
+                    Автор публикации - {{ author }}</small>
+                <small class="text-body-secondary">
+                    Публикация - {{ publication.is_public }}</small>
+                {% if publication.is_public == 'Приватная' %}
+                <small class="text-body-secondary">
+                    Стоимость подписки - {{ publication.publication_price }}</small>
+                {% endif %}
                 <div class="card-body">
                     <div class="mb-3">
                         <button class="w-100 btn btn-primary" type="button" data-bs-toggle="collapse"
@@ -26,8 +31,19 @@
 
                             <br>
                             <div class="col">
+                                {% if request.user.is_authenticated %}
+                                    {% if publication.is_public == 'Публичная' or request.user == publication.publication_owner or request.user.user_subscriptions == publication.pk %}
+                                    <a type="button" class="btn btn-lg btn-outline-success"
+                                       href="{% url 'publications:publication_detail' pk=publication.id %}">Читать</a>
+                                    {% else %}
+                                    <a type="button" class="btn btn-lg btn-outline-success"
+                                       href="{% url 'users:set_subscription' pk=publication.id %}">Купить</a>
+                                    {% endif %}
+                                {% else %}
                                 <a type="button" class="btn btn-lg btn-outline-success"
-                                   href="{% url 'publications:publication_detail' pk=publication.id %}">Читать</a>
+                                   href="{% url 'users:login' %}">Читать</a>
+                                {% endif %}
+
                                 {% if request.user == publication.publication_owner %}
                                 <a type="button" class="btn btn-lg btn-outline-warning"
                                    href="{% url 'publications:publication_edit' pk=publication.id %}">Редактировать</a>

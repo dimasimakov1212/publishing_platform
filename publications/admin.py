@@ -1,4 +1,5 @@
 from django.contrib import admin
-from users.models import Publication
+
+from publications.models import Publication
 
 admin.site.register(Publication)

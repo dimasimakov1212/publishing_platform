@@ -50,3 +50,17 @@ class UserProfileForm(UserChangeForm):
         # передаем в шаблон контроль формы
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'
+
+
+class UserSetSubscriptionForm(forms.ModelForm):
+    """ Форма для подтверждения подписки """
+
+    class Meta:
+        model = User
+        fields = ('user_subscriptions',)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'

@@ -45,7 +45,7 @@ def other_users_page_view(request):
 
 
 class UserPublicationListView(ListView):
-    """ Выводит список публикаций пользователя """
+    """ Выводит список публикаций текущего пользователя """
 
     model = Publication
     template_name = 'publications/publications_list.html'
@@ -56,6 +56,7 @@ class UserPublicationListView(ListView):
         context = super(UserPublicationListView, self).get_context_data(**kwargs)
         context['title'] = 'Публикации'
         context['title_2'] = 'Мои публикации'
+        context['author'] = self.request.user.first_name  # передаем в контекст имя владельца публикации
 
         return context
 
@@ -80,7 +81,7 @@ class PublicationCreateView(CreateView):
     model = Publication
     form_class = PublicationForm
 
-    success_url = reverse_lazy('publications:publications_list')
+    success_url = reverse_lazy('publications:user_publications_list')
 
     def form_valid(self, form):
         """ Реализует сохранение формы создания публикации """
@@ -125,7 +126,7 @@ class PublicationUpdateView(UpdateView):
 
     model = Publication
     form_class = PublicationForm
-    success_url = reverse_lazy('publications:publications_list')
+    success_url = reverse_lazy('publications:home')
 
     def form_valid(self, form):
         """ Реализует сохранение формы редактирования публикации """
@@ -158,3 +159,36 @@ class PublicationDeleteView(DeleteView):
         context['title'] = 'Удаление'
         context['title_2'] = 'Удаление публикации'
         return context
+
+
+class OtherUserPublicationListView(ListView):
+    """ Выводит список публикаций выбранного пользователя """
+
+    model = Publication
+    template_name = 'publications/publications_list.html'
+
+    def get_context_data(self, **kwargs):
+        """ Выводит контекстную информацию в шаблон """
+
+        user = User.objects.get(id=self.kwargs['pk'])  # получаем пользователя автора публикации
+
+        context = super(OtherUserPublicationListView, self).get_context_data(**kwargs)
+        context['title'] = 'Публикации'
+        context['title_2'] = 'публикации пользователя'
+        context['author'] = user.first_name  # передаем в контекст имя владельца публикации
+
+        return context
+
+    def get_queryset(self, *args, **kwargs):
+        """ Выводит в список только публикации определенного пользователя """
+
+        queryset = super().get_queryset(*args, **kwargs)
+
+        try:
+            user = self.kwargs['pk']
+
+            queryset = queryset.filter(publication_owner=user)
+            return queryset
+
+        except TypeError:
+            pass
