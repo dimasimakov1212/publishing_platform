@@ -12,6 +12,9 @@
                     <h5 class="my-0 fw-normal">Публикация - {{ publication.publication_title }}
                         ({{ publication.publication_text|truncatechars:50 }})</h5>
                 </div>
+                <small class="text-body-secondary">
+                    Автор публикации - {{ publication.publication_owner }}</small>
+
                 <div class="card-body">
                     <div class="mb-3">
                         <button class="w-100 btn btn-primary" type="button" data-bs-toggle="collapse"

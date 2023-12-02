@@ -10,7 +10,7 @@ from users.models import User
 
 
 def main_page_view(request):
-    """ Выводит главную страницу """
+    """ Выводит главную страницу и 6 случайных пользователей"""
 
     users = User.objects.filter(is_superuser=False)  # Получаем список пользователей
     if len(users) >= 6:
@@ -27,7 +27,24 @@ def main_page_view(request):
     return render(request, 'publications/homepage.html', context)
 
 
-class PublicationListView(ListView):
+def other_users_page_view(request):
+    """ Выводит список публикаций всех пользователей, кроме текущего """
+
+    user = request.user  # получаем текущего пользователя
+
+    # Получаем список пользователей кроме суперпользователя и текущего пользователя
+    user_list = User.objects.filter(is_superuser=False).exclude(id=user.pk)
+
+    context = {
+        'title': 'Пользователи',
+        'title_2': 'публикации пользователей',
+        'user_list': user_list
+    }
+
+    return render(request, 'publications/homepage.html', context)
+
+
+class UserPublicationListView(ListView):
     """ Выводит список публикаций пользователя """
 
     model = Publication
@@ -36,7 +53,7 @@ class PublicationListView(ListView):
     def get_context_data(self, **kwargs):
         """ Выводит контекстную информацию в шаблон """
 
-        context = super(PublicationListView, self).get_context_data(**kwargs)
+        context = super(UserPublicationListView, self).get_context_data(**kwargs)
         context['title'] = 'Публикации'
         context['title_2'] = 'Мои публикации'
 
