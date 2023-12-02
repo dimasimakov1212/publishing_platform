@@ -15,19 +15,48 @@
 <main>
     {% include 'publications/includes/inc_main_left_menu.html' %}
 
-    <div class="col-3">
+    <div class="col-2">
 
-            <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
-                <h1 class="display-4 fw-normal text-body-emphasis">{{ title }}</h1>
-                <p class="fs-5 text-body-secondary">{{ title_2 }}</p>
-            </div>
+        <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
+            <h1 class="display-6 fw-normal text-body-emphasis">{{ title }}</h1>
+            <p class="fs-6 text-body-secondary">{{ title_2 }}</p>
+        </div>
 
     </div>
+
     <br>
 
-    <div class="col-12">
+
+    <div class="col-8">
         <div class="row">
             {% block content %}
+
+            {% for user in user_list %}
+
+            <div class="col-5">
+                <div class="card shadow-sm">
+                    <div class="card-body" style="background-color:#F0E68C;">
+                        <p class="card-text">Автор: {{ user.first_name }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+
+                                <img src="/media/{{ user.user_avatar }}" alt="" width="50" height="50"
+                                     class="rounded-circle me-2">
+
+                            <small class="text-body-secondary">
+                            {{ user.user_description }}</small>
+                        </div>
+
+                    </div>
+                    <div class="btn-group">
+                        <a type="button" class="btn btn-bg btn-outline-secondary"
+                           href="{% url 'publications:other_user_publications' pk=user.id %}">Читать</a>
+                    </div>
+
+                </div>
+            </div>
+
+            {% endfor %}
+
             {% endblock %}
         </div>
     </div>

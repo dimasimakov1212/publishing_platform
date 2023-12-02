@@ -1,95 +1,16 @@
 from django.contrib.auth import login, authenticate
-from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.views import PasswordResetDoneView
 from django.db import IntegrityError
 from django.shortcuts import render, redirect
 
 from django.urls import reverse_lazy
-from django.utils.encoding import force_bytes
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.views import View
-from django.views.generic import CreateView, TemplateView
+from django.views.generic import CreateView, TemplateView, UpdateView, ListView
 
-from users.forms import UserRegisterForm, UserEnterCodeForm
+from publications.models import Publication
+from users.forms import UserRegisterForm, UserEnterCodeForm, UserProfileForm, UserSetSubscriptionForm
 from users.models import User
 from users.services import code_generator, users_list, send_sms
-
-
-# ----------- регистрация и валидация нового пользователя сделана через функции -----------
-# class RegisterView(CreateView):
-#     """ Регистрация нового пользователя """
-#
-#     model = User
-#     form_class = UserRegisterForm
-#     template_name = "users/register.html"
-#     success_url = reverse_lazy('publications:home')
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         user = User.objects.last()
-#         # user = self.request.user
-#         # print(user)
-#         context['user_pk'] = user.id
-#
-#         return context
-#
-#     def form_valid(self, form):
-#         user = form.save()
-#         user.is_active = False
-#         user.verify_code = code_generator()
-#         print(user.id)
-#         user.save()
-#
-#         users_list()
-#
-#         return redirect('users:code_entering')
-#
-#
-# class UserConfirmEmailView(TemplateView):
-#     """
-#     Подтверждение пользователем регистрации
-#     """
-#     form_class = UserEnterCodeForm
-#     template_name = "users/code_entering.html"
-#
-#     def get(self, request, *args, **kwargs):
-#         form = self.form_class()
-#         return render(request, self.template_name, {'form': form})
-#
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         my_list = RegisterView.as_view()(self.request)
-#
-#         context['user_pk'] = my_list.context_data['user_pk']
-#         # print(context['user_pk'])
-#         return context
-#
-#     def post(self, request, *args, **kwargs):
-#         context = self.get_context_data(**kwargs)
-#
-#         # verify_code = code_generator()
-#         # print(verify_code)
-#
-#         code = self.request.POST.get('verify_code', None)
-#
-#
-#         if code:
-#             pk = context['user_pk']
-#             user = User.objects.get(pk=pk)
-#
-#             user_code = user.verify_code
-#
-#             if code == user_code:
-#                 user.is_active = True
-#                 user.save()
-#                 login(request, user)
-#
-#                 return redirect('users:user_confirmed')
-#
-#             else:
-#                 user.delete()
-#                 return redirect('users:user_confirmation_failed')
-# -------------------------- конец ---------------------------------------------
 
 
 class UserConfirmationSentView(PasswordResetDoneView):
@@ -119,42 +40,39 @@ class UserAlreadyExistView(TemplateView):
 def user_authentication(request):
     """ Регистрация нового пользователя """
 
-    form = UserRegisterForm  # класс-метод формы регистрации
+    form = UserRegisterForm(request.POST)  # класс-метод формы регистрации
+    data = {'form': form, 'title': 'Регистрация'}  # контекстная информация
 
     try:
         # получаем данные пользователя
         if request.method == 'POST':
-            username = request.POST.get('user_email')
-            user_email = request.POST.get('user_email')
-            password = request.POST.get('password1')
-            user_phone = request.POST.get('user_phone')
 
-            # аутентификация пользователя
-            user = authenticate(request, username=username, user_email=user_email, password=password,
-                                user_phone=user_phone)
-            # создаем объект пользователя
-            user = User.objects.create(user_email=user_email, password=password, user_phone=user_phone)
+            if form.is_valid():
+                user = form.save()
+                user.set_password(form.cleaned_data['password1'])
+                user.save()
 
-            users_list()
+                users_list()
 
-            # получаем случайно сгенерированный код и записываем его в кэш сессии
-            request.session['verify_code'] = code_generator()
+                # получаем случайно сгенерированный код и записываем его в кэш сессии
+                request.session['verify_code'] = code_generator()
 
-            if user is not None:
-                request.session['pk'] = user.pk  # заносим в кэш сессии id текущего пользователя
+                if user is not None:
+                    request.session['pk'] = user.pk  # заносим в кэш сессии id текущего пользователя
 
-                return redirect('users:code_entering')  # перенаправляем на форму ввода кода верификации
+                    return redirect('users:code_entering')  # перенаправляем на форму ввода кода верификации
 
     except IntegrityError:
         return redirect('users:user_already_exist')  # перенаправляем на форму, что пользователь уже существует
 
-    return render(request, 'users/register.html', {'form': form})
+    return render(request, 'users/register.html', context=data)
 
 
 def verify_view(request):
     """ Верификация пользователя через подтверждение кода верификации """
 
     form = UserEnterCodeForm  # класс-метод формы регистрации
+    data = {'form': form, 'title': 'Подтверждение'}  # контекстная информация
 
     pk = request.session.get('pk')  # получаем из кэша сессии id текущего пользователя
     verify_code = request.session.get('verify_code')  # получаем из кэша сессии код верификации
@@ -162,7 +80,7 @@ def verify_view(request):
     if pk:
         user = User.objects.get(pk=pk)  # получаем пользователя
 
-        send_sms(verify_code, user.user_phone)  # отправляем смс с кодом верификации пользователю
+        # send_sms(verify_code, user.user_phone)  # отправляем смс с кодом верификации пользователю
 
         print(verify_code)
 
@@ -183,4 +101,104 @@ def verify_view(request):
                 user.delete()
                 return redirect('users:user_confirmation_failed')  # выводим сообщение об ошибке регистрации
 
-    return render(request, 'users/code_entering.html', {'form': form})
+    return render(request, 'users/code_entering.html', context=data)
+
+
+class ProfileView(UpdateView):
+    """ Контроллер профиля пользователя """
+
+    model = User
+    form_class = UserProfileForm
+    success_url = reverse_lazy('publications:home')
+
+    def get_object(self, queryset=None):
+        """ Получаем текущего пользователя """
+        return self.request.user
+
+    def get_context_data(self, **kwargs):
+        """ Выводит контекстную информацию в шаблон """
+        context = super(ProfileView, self).get_context_data(**kwargs)
+
+        context['title'] = 'Профиль'
+        context['title_2'] = 'редактирование профиля пользователя'
+
+        return context
+
+
+class UserListView(ListView):
+    """ Выводит список пользователей """
+
+    model = User
+    # permission_required = 'users.view_user'
+    template_name = 'users/user_list.html'
+
+    def get_context_data(self, **kwargs):
+        """ Выводит контекстную информацию в шаблон """
+
+        context = super(UserListView, self).get_context_data(**kwargs)
+
+        context['title'] = 'Пользователи'
+        context['title_2'] = 'интересное от наших пользователей'
+
+        return context
+
+
+def user_set_subscription(request, **kwargs):
+    """ Получение подписки пользователя """
+
+    data = {'title': 'Подписка'}  # контекстная информация
+
+    pk = kwargs['pk']
+    print(pk)
+    publication = Publication.objects.get(id=pk)
+    print(publication)
+
+    user = request.user
+    user.user_subscriptions.add(publication)
+    user.save()
+
+    return render(reverse_lazy, 'publications/publications_list.html', context=data)
+
+
+class UserSetSubscription(UpdateView):
+    """ Получение подписки пользователя """
+
+    model = Publication
+    form_class = UserSetSubscriptionForm
+    success_url = reverse_lazy('publications:publications_list')
+
+    def form_valid(self, form, **kwargs):
+        """ Реализует сохранение изменений подписок пользователя """
+
+        pk = self.kwargs['pk']
+        publication = Publication.objects.get(id=pk)
+
+        user = self.request.user
+
+        if form.is_valid():
+            user.user_subscriptions.add(publication)
+            user.save()
+
+        return super().form_valid(form)
+
+    # def get_object(self, queryset=None, **kwargs):
+    #     """ Получаем текущего пользователя """
+    #
+    #     pk = self.kwargs['pk']
+    #     publication = Publication.objects.get(id=pk)
+    #
+    #     user = self.request.user
+    #     user.user_subscriptions.add(publication)
+    #     user.save()
+    #
+    #     return self.request.user
+
+    def get_context_data(self, **kwargs):
+        """ Выводит контекстную информацию в шаблон """
+        context = super(UserSetSubscription, self).get_context_data(**kwargs)
+
+        context['title'] = 'Профиль'
+        context['title_2'] = 'редактирование профиля пользователя'
+
+        return context
+

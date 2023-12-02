@@ -5,9 +5,8 @@ from users.models import User
 
 
 class UserRegisterForm(UserCreationForm):
-    """
-    Форма регистрации пользователя
-    """
+    """ Форма регистрации пользователя """
+    user_phone = forms.CharField(help_text='Номер телефона в формате +70000000000')
     class Meta:
         model = User
         fields = ('user_phone', 'user_email', 'password1', 'password2')
@@ -20,7 +19,7 @@ class UserRegisterForm(UserCreationForm):
 
 
 class UserEnterCodeForm(forms.ModelForm):
-    """ Форма регистрации пользователя """
+    """ Форма для ввода кода подтверждения """
     verify_code = forms.CharField(label='Регистрация', help_text='Код подтверждения')
 
     class Meta:
@@ -35,22 +34,33 @@ class UserEnterCodeForm(forms.ModelForm):
 
 
 class UserProfileForm(UserChangeForm):
-    """
-    Форма профиля пользователя
-    """
+    """ Форма редактирования профиля пользователя """
+
     class Meta:
         model = User
-        fields = ('user_email', 'first_name', 'last_name', 'user_phone', 'user_avatar')
+        fields = ('user_email', 'first_name', 'last_name', 'user_phone', 'user_city', 'user_avatar', 'user_description')
 
     def __init__(self, *args, **kwargs):
-        """
-        Дополнительные настройки
-        """
+        """ Дополнительные настройки """
         super().__init__(*args, **kwargs)
 
         # Позволяет не выводить в профиле поле пароля
         self.fields['password'].widget = forms.HiddenInput()
 
         # передаем в шаблон контроль формы
+        for field_name, field in self.fields.items():
+            field.widget.attrs['class'] = 'form-control'
+
+
+class UserSetSubscriptionForm(forms.ModelForm):
+    """ Форма для подтверждения подписки """
+
+    class Meta:
+        model = User
+        fields = ('user_subscriptions',)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
         for field_name, field in self.fields.items():
             field.widget.attrs['class'] = 'form-control'

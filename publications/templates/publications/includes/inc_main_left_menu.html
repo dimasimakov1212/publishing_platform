@@ -18,21 +18,31 @@
             </a>
         </li>
         <li>
-            <a href="#" class="nav-link text-white">
+            <a href="{% url 'publications:publications_list' %}" class="nav-link text-white">
                 <svg class="bi me-2" width="16" height="16">
                     <use xlink:href="#speedometer2"/>
                 </svg>
-                Категории
+                Публикации пользователей
             </a>
         </li>
+        {% if request.user.is_authenticated %}
         <li>
-            <a href="#" class="nav-link text-white">
+            <a href="{% url 'publications:user_publications_list' %}" class="nav-link text-white">
                 <svg class="bi me-2" width="16" height="16">
                     <use xlink:href="#table"/>
                 </svg>
-                Заказы
+                Мои публикации
             </a>
         </li>
+        <li>
+            <a href="{% url 'publications:create_publication' %}" class="nav-link text-white">
+                <svg class="bi me-2" width="16" height="16">
+                    <use xlink:href="#grid"/>
+                </svg>
+                Создать публикацию
+            </a>
+        </li>
+        {% endif %}
         <li>
             <a href="#" class="nav-link text-white">
                 <svg class="bi me-2" width="16" height="16">
@@ -47,7 +57,7 @@
         <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
            id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
             {% if request.user.is_authenticated %}
-            <img src="/media/users/{{ user.user_avatar }}" alt="" width="32" height="32"
+            <img src="/media/{{ user.user_avatar }}" alt="" width="32" height="32"
                  class="rounded-circle me-2">
             {% else %}
             <img src="/media/users/Аватарка без фото.png" alt="" width="32" height="32"
@@ -57,13 +67,13 @@
         </a>
         <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
             {% if request.user.is_authenticated %}
-            <li><a class="dropdown-item" href="#">Профиль</a></li>
+            <li><a class="dropdown-item" href="{% url 'users:profile' %}">Профиль</a></li>
             <li>
                 <hr class="dropdown-divider">
             </li>
             <li><a class="dropdown-item" href="{% url 'users:logout' %}">Выход</a></li>
             {% else %}
-            <li><a class="dropdown-item" href="#">Вход</a></li>
+            <li><a class="dropdown-item" href="{% url 'users:login' %}">Вход</a></li>
             <li>
                 <hr class="dropdown-divider">
             </li>
