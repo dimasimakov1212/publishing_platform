@@ -192,3 +192,20 @@ class OtherUserPublicationListView(ListView):
 
         except TypeError:
             pass
+
+
+def user_subscriptions_view(request):
+    """ Выводит список публикаций, на которые подписан пользователь """
+
+    user = request.user  # получаем текущего пользователя
+
+    # Получаем список публикаций, на которые подписан текущий пользователь
+    subscriptions_list = user.user_subscriptions.all()
+
+    context = {
+        'title': 'Публикации',
+        'title_2': 'мои подписки',
+        'object_list': subscriptions_list
+    }
+
+    return render(request, 'publications/publications_list.html', context)

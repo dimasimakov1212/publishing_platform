@@ -3,6 +3,10 @@ from random import randint
 import requests
 import json
 
+from django.shortcuts import get_object_or_404, redirect
+from django.urls import reverse
+
+from publications.models import Publication
 from users.models import User
 
 
@@ -46,3 +50,17 @@ def send_sms(sms_text, user_phone):
 
     if req.status_code != 200:
         print("В настоящий момент отправка смс невозможна. Попробуйте позже.")
+
+
+def user_set_subscription(request, pk):
+    """ Добавление подписки пользователя """
+
+    user = request.user  # получаем текущего пользователя
+
+    publication = get_object_or_404(Publication, pk=pk)  # получаем публикацию по переданному pk
+
+    user.user_subscriptions.add(publication)  # добавляем публикацию в подписки пользователя
+
+    user.save()
+
+    return redirect(reverse('publications:publications_list'))

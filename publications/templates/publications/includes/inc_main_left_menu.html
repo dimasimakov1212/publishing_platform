@@ -37,9 +37,17 @@
         <li>
             <a href="{% url 'publications:create_publication' %}" class="nav-link text-white">
                 <svg class="bi me-2" width="16" height="16">
-                    <use xlink:href="#grid"/>
+                    <use xlink:href="#collection"/>
                 </svg>
                 Создать публикацию
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'publications:user_subscriptions_list' %}" class="nav-link text-white">
+                <svg class="bi me-2" width="16" height="16">
+                    <use xlink:href="#grid"/>
+                </svg>
+                Мои подписки
             </a>
         </li>
         {% endif %}

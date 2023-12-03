@@ -32,7 +32,7 @@
                             <br>
                             <div class="col">
                                 {% if request.user.is_authenticated %}
-                                    {% if publication.is_public == 'Публичная' or request.user == publication.publication_owner or request.user.user_subscriptions == publication.pk %}
+                                    {% if publication.is_public == 'Публичная' or request.user == publication.publication_owner or publication in request.user.user_subscriptions.all %}
                                     <a type="button" class="btn btn-lg btn-outline-success"
                                        href="{% url 'publications:publication_detail' pk=publication.id %}">Читать</a>
                                     {% else %}

@@ -143,43 +143,43 @@ class UserListView(ListView):
         return context
 
 
-def user_set_subscription(request, **kwargs):
-    """ Получение подписки пользователя """
-
-    data = {'title': 'Подписка'}  # контекстная информация
-
-    pk = kwargs['pk']
-    print(pk)
-    publication = Publication.objects.get(id=pk)
-    print(publication)
-
-    user = request.user
-    user.user_subscriptions.add(publication)
-    user.save()
-
-    return render(reverse_lazy, 'publications/publications_list.html', context=data)
-
-
-class UserSetSubscription(UpdateView):
-    """ Получение подписки пользователя """
-
-    model = Publication
-    form_class = UserSetSubscriptionForm
-    success_url = reverse_lazy('publications:publications_list')
-
-    def form_valid(self, form, **kwargs):
-        """ Реализует сохранение изменений подписок пользователя """
-
-        pk = self.kwargs['pk']
-        publication = Publication.objects.get(id=pk)
-
-        user = self.request.user
-
-        if form.is_valid():
-            user.user_subscriptions.add(publication)
-            user.save()
-
-        return super().form_valid(form)
+# def user_set_subscription(request, **kwargs):
+#     """ Получение подписки пользователя """
+#
+#     data = {'title': 'Подписка'}  # контекстная информация
+#
+#     pk = kwargs['pk']
+#     print(pk)
+#     publication = Publication.objects.get(id=pk)
+#     print(publication)
+#
+#     user = request.user
+#     user.user_subscriptions.add(publication)
+#     user.save()
+#
+#     return render(reverse_lazy, 'publications/publications_list.html', context=data)
+#
+#
+# class UserSetSubscription(UpdateView):
+#     """ Получение подписки пользователя """
+#
+#     model = Publication
+#     form_class = UserSetSubscriptionForm
+#     success_url = reverse_lazy('publications:publications_list')
+#
+#     def form_valid(self, form, **kwargs):
+#         """ Реализует сохранение изменений подписок пользователя """
+#
+#         pk = self.kwargs['pk']
+#         publication = Publication.objects.get(id=pk)
+#
+#         user = self.request.user
+#
+#         if form.is_valid():
+#             user.user_subscriptions.add(publication)
+#             user.save()
+#
+#         return super().form_valid(form)
 
     # def get_object(self, queryset=None, **kwargs):
     #     """ Получаем текущего пользователя """
@@ -193,12 +193,12 @@ class UserSetSubscription(UpdateView):
     #
     #     return self.request.user
 
-    def get_context_data(self, **kwargs):
-        """ Выводит контекстную информацию в шаблон """
-        context = super(UserSetSubscription, self).get_context_data(**kwargs)
-
-        context['title'] = 'Профиль'
-        context['title_2'] = 'редактирование профиля пользователя'
-
-        return context
+    # def get_context_data(self, **kwargs):
+    #     """ Выводит контекстную информацию в шаблон """
+    #     context = super(UserSetSubscription, self).get_context_data(**kwargs)
+    #
+    #     context['title'] = 'Профиль'
+    #     context['title_2'] = 'редактирование профиля пользователя'
+    #
+    #     return context
 
