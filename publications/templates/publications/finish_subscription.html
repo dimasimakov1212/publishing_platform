@@ -1,0 +1,17 @@
+{% extends 'publications/homepage.html' %}
+
+{% block content %}
+
+<div class="col-3">
+    <div class="row text-center">
+        <div class="alert alert-success" role="alert">
+            <h4 class="alert-heading">Оформить подписку</h4>
+            <div class="col">
+                <a type="button" class="btn btn-lg btn-outline-success"
+                   href="{% url 'users:set_subscription' %}">Оформить</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

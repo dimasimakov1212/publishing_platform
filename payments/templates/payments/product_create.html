@@ -1,0 +1,31 @@
+{% extends 'publications/homepage.html' %}
+
+{% block content %}
+
+<div class="col-lg-5 col-md-8 ">
+    <div class="row text-center">
+        <div class="col-12">
+            <div class="card mb-6 rounded-3 shadow-sm">
+                <div class="card-header py-3">
+                    <h5 class="my-0 fw-normal">Публикация - {{ publication.publication_title }}</h5>
+                </div>
+                <h6 class="text-body-secondary">
+                    Автор публикации - {{ author }}</h6>
+                <br>
+                <h5 class="text-body-secondary">
+                    Стоимость подписки - {{ publication.publication_price }}</h5>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <br>
+                        <div class="col">
+                            <a type="button" class="btn btn-lg btn-outline-success"
+                               href="{% url 'payments:landing' pk=product.id %}">Продолжить</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

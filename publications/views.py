@@ -2,7 +2,7 @@ from random import sample
 
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView, TemplateView
 
 from publications.forms import PublicationForm
 from publications.models import Publication
@@ -192,3 +192,24 @@ class OtherUserPublicationListView(ListView):
 
         except TypeError:
             pass
+
+
+def user_subscriptions_view(request):
+    """ Выводит список публикаций, на которые подписан пользователь """
+
+    user = request.user  # получаем текущего пользователя
+
+    # Получаем список публикаций, на которые подписан текущий пользователь
+    subscriptions_list = user.user_subscriptions.all()
+
+    context = {
+        'title': 'Публикации',
+        'title_2': 'мои подписки',
+        'object_list': subscriptions_list
+    }
+
+    return render(request, 'publications/publications_list.html', context)
+
+
+class FinishSubscriptionView(TemplateView):
+    template_name = "publications/finish_subscription.html"

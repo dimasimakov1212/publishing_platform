@@ -3,7 +3,8 @@ from django.urls import path
 
 from publications.apps import PublicationsConfig
 from publications.views import main_page_view, UserPublicationListView, PublicationCreateView, PublicationDetailView, \
-    PublicationUpdateView, PublicationDeleteView, other_users_page_view, OtherUserPublicationListView
+    PublicationUpdateView, PublicationDeleteView, other_users_page_view, OtherUserPublicationListView, \
+    user_subscriptions_view, FinishSubscriptionView
 
 app_name = PublicationsConfig.name
 
@@ -16,4 +17,6 @@ urlpatterns = [
     path('publication/<int:pk>/', PublicationDetailView.as_view(), name='publication_detail'),
     path('publication_edit/<int:pk>/', PublicationUpdateView.as_view(), name='publication_edit'),
     path('publication_delete/<int:pk>/', PublicationDeleteView.as_view(), name='publication_delete'),
+    path('user_subscriptions/', user_subscriptions_view, name='user_subscriptions_list'),
+    path('finish_subscription/', FinishSubscriptionView.as_view(), name='finish_subscription'),
 ]
