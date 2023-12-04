@@ -2,7 +2,7 @@ from random import sample
 
 from django.shortcuts import render
 from django.urls import reverse_lazy
-from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
+from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView, TemplateView
 
 from publications.forms import PublicationForm
 from publications.models import Publication
@@ -209,3 +209,7 @@ def user_subscriptions_view(request):
     }
 
     return render(request, 'publications/publications_list.html', context)
+
+
+class FinishSubscriptionView(TemplateView):
+    template_name = "publications/finish_subscription.html"

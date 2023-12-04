@@ -37,7 +37,7 @@
                                        href="{% url 'publications:publication_detail' pk=publication.id %}">Читать</a>
                                     {% else %}
                                     <a type="button" class="btn btn-lg btn-outline-success"
-                                       href="{% url 'users:set_subscription' pk=publication.id %}">Купить</a>
+                                       href="{% url 'payments:product_create' pk=publication.id %}">Купить</a>
                                     {% endif %}
                                 {% else %}
                                 <a type="button" class="btn btn-lg btn-outline-success"
