@@ -4,11 +4,9 @@ from django.db import IntegrityError
 from django.shortcuts import render, redirect
 
 from django.urls import reverse_lazy
-from django.views import View
-from django.views.generic import CreateView, TemplateView, UpdateView, ListView
+from django.views.generic import TemplateView, UpdateView, ListView
 
-from publications.models import Publication
-from users.forms import UserRegisterForm, UserEnterCodeForm, UserProfileForm, UserSetSubscriptionForm
+from users.forms import UserRegisterForm, UserEnterCodeForm, UserProfileForm
 from users.models import User
 from users.services import code_generator, users_list, send_sms
 
@@ -80,7 +78,8 @@ def verify_view(request):
     if pk:
         user = User.objects.get(pk=pk)  # получаем пользователя
 
-        # send_sms(verify_code, user.user_phone)  # отправляем смс с кодом верификации пользователю
+        # отправка смс временно отключена, код выводится в терминале
+        # send_sms(verify_code, user.user_phone) # отправляем смс с кодом верификации пользователю
 
         print(verify_code)
 

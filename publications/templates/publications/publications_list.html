@@ -40,8 +40,13 @@
                                        href="{% url 'payments:product_create' pk=publication.id %}">Купить</a>
                                     {% endif %}
                                 {% else %}
-                                <a type="button" class="btn btn-lg btn-outline-success"
-                                   href="{% url 'users:login' %}">Читать</a>
+                                    {% if publication.is_public == 'Публичная' %}
+                                    <a type="button" class="btn btn-lg btn-outline-success"
+                                       href="{% url 'publications:publication_detail' pk=publication.id %}">Читать</a>
+                                    {% else %}
+                                    <a type="button" class="btn btn-lg btn-outline-success"
+                                    href="{% url 'users:login' %}">Купить</a>
+                                    {% endif %}
                                 {% endif %}
 
                                 {% if request.user == publication.publication_owner %}
