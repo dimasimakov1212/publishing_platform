@@ -16,6 +16,6 @@ urlpatterns = [
     path('user_confirmed/', UserConfirmedView.as_view(), name='user_confirmed'),
     path('user_confirmation_failed/', UserConfirmationFailView.as_view(), name='user_confirmation_failed'),
     path('user_already_exist/', UserAlreadyExistView.as_view(), name='user_already_exist'),
-    path('profile/', ProfileView.as_view(), name='profile'),
+    path('profile/<int:pk>/', ProfileView.as_view(), name='profile'),
     path('set_subscription/', user_set_subscription, name='set_subscription'),
     ]
