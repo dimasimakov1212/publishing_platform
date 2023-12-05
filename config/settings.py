@@ -83,13 +83,24 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'publishing_platform',
+#         'USER': 'postgres',
+#         'PASSWORD': os.getenv('DATABASE_PASSWORD'),
+#         'HOST': '127.0.0.1'
+#     }
+# }
+
+# Docker database settings
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'publishing_platform',
+        'NAME': 'postgres',
         'USER': 'postgres',
-        'PASSWORD': os.getenv('DATABASE_PASSWORD'),
-        'HOST': '127.0.0.1'
+        'PASSWORD': os.getenv('DOCKER_DATABASE_PASSWORD'),  # пароль, созданный при запуске контейнера postgres
+        'HOST': 'db'
     }
 }
 
