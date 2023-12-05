@@ -1,8 +1,6 @@
 from django.test import TestCase
 from django.test.client import Client
 from django.urls import reverse
-from django.contrib.auth import authenticate, login
-from requests import session
 
 from publications.models import Publication
 from users.models import User
@@ -144,3 +142,17 @@ class PublicationTestCase(TestCase):
 
         response = self.client.get('/finish_subscription/')
         self.assertTemplateUsed(response, 'publications/finish_subscription.html')
+
+    def test_other_users_page_publication(self):
+        """ Тестирование страницы списка публикаций других пользователей """
+
+        self.user = User.objects.create(user_email='admin_2@dima.pro')
+        self.user.set_password('dima123')
+        self.user.save()
+
+        response = self.client.get(
+            reverse('publications:other_user_publications',
+                    kwargs={'pk': self.user.pk}))
+
+        self.assertTemplateUsed(response, 'publications/publications_list.html')
+        self.assertEqual(response.status_code, 200)

@@ -1,4 +1,4 @@
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login
 from django.contrib.auth.views import PasswordResetDoneView
 from django.db import IntegrityError
 from django.shortcuts import render, redirect
@@ -140,4 +140,3 @@ class UserListView(ListView):
         context['title_2'] = 'интересное от наших пользователей'
 
         return context
-

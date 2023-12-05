@@ -1,8 +1,6 @@
 from django.test import TestCase
 from django.test.client import Client
-from django.urls import reverse
-from django.contrib.auth import authenticate, login
-from django.contrib import auth
+
 from django.core.management import call_command
 
 from users.models import User
