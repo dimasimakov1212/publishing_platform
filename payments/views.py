@@ -1,17 +1,15 @@
 import os
 
 from django.conf import settings
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, get_object_or_404
 import stripe
 from django.http import JsonResponse, HttpResponse
-from django.urls import reverse
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 
 from payments.models import Product, Payment
 from publications.models import Publication
-from users.services import user_set_subscription
 
 stripe_public_key = os.getenv('STRIPE_PUBLIC_KEY')
 stripe.api_key = os.getenv('STRIPE_SECRET_KEY')

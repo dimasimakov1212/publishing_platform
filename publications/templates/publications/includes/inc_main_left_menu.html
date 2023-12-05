@@ -75,7 +75,7 @@
         </a>
         <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
             {% if request.user.is_authenticated %}
-            <li><a class="dropdown-item" href="{% url 'users:profile' %}">Профиль</a></li>
+            <li><a class="dropdown-item" href="{% url 'users:profile' pk=request.user.id%}">Профиль</a></li>
             <li>
                 <hr class="dropdown-divider">
             </li>

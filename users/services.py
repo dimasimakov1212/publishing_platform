@@ -3,7 +3,7 @@ from random import randint
 import requests
 import json
 
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import redirect
 from django.urls import reverse
 
 from payments.models import Payment

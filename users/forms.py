@@ -7,6 +7,7 @@ from users.models import User
 class UserRegisterForm(UserCreationForm):
     """ Форма регистрации пользователя """
     user_phone = forms.CharField(help_text='Номер телефона в формате +70000000000')
+
     class Meta:
         model = User
         fields = ('user_phone', 'user_email', 'password1', 'password2')
