@@ -55,3 +55,11 @@ python3 manage.py create_super_user
 - STRIPE_PUBLIC_KEY
 - STRIPE_SECRET_KEY
 - STRIPE_WEBHOOK_SECRET
+
+### Тесты
+
+Для проекта написаны тесты через unittest, покрытие тестами составило 76%
+
+### Docker контейнеризация
+
+Проект собран в контейнер Docker и готов для размещения на сервере
