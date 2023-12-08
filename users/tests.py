@@ -1,10 +1,15 @@
+from django.contrib.auth import authenticate
 from django.test import TestCase
 from django.test.client import Client
+from django.contrib.auth import get_user_model
 
 from django.core.management import call_command
+from django.urls import reverse
 
-from users.models import User
+# from users.models import User
 from users.services import code_generator
+
+User = get_user_model()
 
 
 class UserTestCase(TestCase):
@@ -12,14 +17,14 @@ class UserTestCase(TestCase):
     def setUp(self) -> None:
 
         # создаем тестового пользователя
-        self.user = User.objects.create(user_email='admin@dima.pro', user_phone='+70000000000')
-        self.user.set_password('dima123')
-        self.user.save()
+        self.user = User.objects.create(user_email='admin@dima.pro', user_phone='+70000000000', password='dima123')
+        # self.user.set_password('dima123')
+        # self.user.save()
 
         self.client = Client()
 
         # аутентификацируем пользователя
-        # login = self.client.login(user_email='admin@dima.pro', password='dima123')
+        # self.client.force_login(self.user)
 
     def test_create_user(self):
         """ Тестирование создания пользователя """
@@ -40,13 +45,14 @@ class UserTestCase(TestCase):
     # def test_detail_user(self):
     #     """ Тестирование деталей пользователя """
     #
-    #     self.user = User.objects.create(user_email='admin_1@dima.pro', user_phone='+70000000000')
-    #     self.user.set_password('dima123')
-    #     # self.user.authenticate(user_email='admin_1@dima.pro', password='dima123')
-    #     login(self, self.user)
+    #     # self.user = User.objects.create(user_email='admin_1@dima.pro', user_phone='+70000000000')
+    #     # self.user.set_password('dima123')
+    #     self.client.force_login(self.user)
+    #
+    #     # self.user = authenticate(user_email='admin_1@dima.pro', user_phone='+70000000000')
     #
     #     response = self.client.get(
-    #         reverse('users:profile', kwargs={'pk': self.user.pk})
+    #         reverse('users:profile', kwargs={'pk': self.user.id})
     #     )
     #
     #     self.assertEqual(response.status_code, 200)
