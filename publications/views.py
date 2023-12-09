@@ -213,3 +213,7 @@ def user_subscriptions_view(request):
 
 class FinishSubscriptionView(TemplateView):
     template_name = "publications/finish_subscription.html"
+
+
+class ContactsView(TemplateView):
+    template_name = "publications/contacts.html"
