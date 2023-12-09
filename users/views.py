@@ -70,7 +70,7 @@ def verify_view(request):
     """ Верификация пользователя через подтверждение кода верификации """
 
     form = UserEnterCodeForm  # класс-метод формы регистрации
-    data = {'form': form, 'title': 'Подтверждение'}  # контекстная информация
+    data = {'form': form, 'title': 'Вход'}  # контекстная информация
 
     pk = request.session.get('pk')  # получаем из кэша сессии id текущего пользователя
     verify_code = request.session.get('verify_code')  # получаем из кэша сессии код верификации

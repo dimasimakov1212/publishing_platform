@@ -16,10 +16,8 @@
                     Автор публикации - {{ author }}</small>
                 <small class="text-body-secondary">
                     Публикация - {{ publication.is_public }}</small>
-                {% if publication.is_public == 'Приватная' %}
                 <small class="text-body-secondary">
                     Стоимость подписки - {{ publication.publication_price }}</small>
-                {% endif %}
                 <div class="card-body">
                     <div class="mb-3">
                         <button class="w-100 btn btn-primary" type="button" data-bs-toggle="collapse"
@@ -28,7 +26,6 @@
                             Развернуть/свернуть
                         </button>
                         <div class="collapse" id="collapseExample{{ forloop.counter }}">
-
                             <br>
                             <div class="col">
                                 {% if request.user.is_authenticated %}

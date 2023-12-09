@@ -6,12 +6,12 @@
     <form method="post" enctype="multipart/form-data">
         <div class="card">
             <div class="card-header">
-                <h4 class="card-title">Регистрация</h4>
+                <h4 class="card-title">Вход</h4>
             </div>
             <div class="card-body">
                 {% csrf_token %}
                 {{ form.as_p }}
-                <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+                <button type="submit" class="btn btn-primary">Войти</button>
             </div>
         </div>
     </form>
