@@ -215,5 +215,12 @@ class FinishSubscriptionView(TemplateView):
     template_name = "publications/finish_subscription.html"
 
 
-class ContactsView(TemplateView):
-    template_name = "publications/contacts.html"
+def contacts_view(request):
+    """ Выводит контакты для связи """
+
+    context = {
+        'title': 'Контакты',
+        'title_2': 'наши контакты',
+    }
+
+    return render(request, 'publications/contacts.html', context)
