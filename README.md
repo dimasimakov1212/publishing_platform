@@ -19,13 +19,34 @@ sudo -i -u postgres psql
 CREATE DATABASE publishing_platform;
 ```
 
+### Интеграция с базой данных
+
+Необходимо создать миграции
+```commandline
+python manage.py makemigrations
+```
+
+И далее применить миграции
+```commandline
+python manage.py migrate
+```
+
+### Запуск приложения на локальном хосте
+
+Для запуска приложения на локальной машине выполнить команду
+```commandline
+python manage.py runserver
+```
+После чего по появившейся ссылке можно открыть проект:
+http://127.0.0.1:8000/
+
 ### Создание суперпользователя
 
 В файле .env задать значение пароля для суперпользователя SUPER_USER_PASSWORD
 
 Выполнить команду
 ```commandline
-python3 manage.py create_super_user
+python manage.py create_super_user
 ```
 
 Для входа в админку использовать имя **admin@dima.pro**
@@ -39,9 +60,10 @@ python3 manage.py create_super_user
 на платформе.
 
 Для запуска сервиса необходима регистрация и получение необходимых параметров
-- SMS_PROSTO_EMAIL
-- SMS_PROSTO_PASSWORD
-- SMS_PROSTO_API_KEY
+- SMS_PROSTO_EMAIL (email, на котором зарегистрирован пользователь сервиса
+рассылки СМС)
+- SMS_PROSTO_PASSWORD (пароль к личному кабинету сервиса рассылки СМС)
+- SMS_PROSTO_API_KEY (API ключ)
 
 ### Оплата подписки на публикации пользователей
 
@@ -51,10 +73,27 @@ python3 manage.py create_super_user
 Если платеж прошел успешно, то пользователь перенаправляется на страницу публикаций,
 где он завершит подписку и получит доступ для просмотра этой публикации.
 
-Для интеграции с платежной системой необходима регистрация и получение необходимых параметров
-- STRIPE_PUBLIC_KEY
-- STRIPE_SECRET_KEY
-- STRIPE_WEBHOOK_SECRET
+Для интеграции с платежной системой необходима регистрация на Stripe и получение 
+необходимых параметров:
+- STRIPE_PUBLIC_KEY (публичный ключ Stripe)
+- STRIPE_SECRET_KEY (секретный ключ Stripe)
+- STRIPE_WEBHOOK_SECRET (секретный ключ Stripe для доступа к информации о платеже)
+
+Необходимый пакет stripe устанавливается в соответствии с pyproject.toml
+
+Для запуска Stripe Webhooks необходимо установить дополнительно Stripe CLI:
+https://stripe.com/docs/stripe-cli#install
+
+После установки CLI и его готовности, 
+выполните следующую команду в новом терминале:
+```commandline
+stripe listen --forward-to localhost:8000/webhooks/stripe/
+```
+Это отправит события на наш локальный сервер Django по пути: /webhooks/stripe/
+
+А в терминале Stripe выведет secret key веб-перехватчика. Его необходимо сохранить
+в STRIPE_WEBHOOK_SECRET
+
 
 ### Тесты
 
@@ -62,4 +101,18 @@ python3 manage.py create_super_user
 
 ### Docker контейнеризация
 
-Проект собран в контейнер Docker и готов для размещения на сервере
+Проект готов для сборки в контейнер Docker и последующего размещения на сервере
+
+Для сборки контейнера испоьзовать команду
+```commandline
+docker compose build
+```
+
+Запустить контейнер можно командой
+```commandline
+docker compose up
+```
+После запуска контейнера, доступ к приложению будет через порт 8001:
+http://localhost:8001
+ или 
+http://<IP_хоста>:8001

@@ -118,18 +118,16 @@ def stripe_webhook(request):
         event = stripe.Webhook.construct_event(
             payload, sig_header, settings.STRIPE_WEBHOOK_SECRET
         )
-    except ValueError as e:
+    except ValueError:
         # Invalid payload
         return HttpResponse(status=400)
-    except stripe.error.SignatureVerificationError as e:
+    except stripe.error.SignatureVerificationError:
         # Invalid signature
         return HttpResponse(status=400)
 
     # проверяем завершение оплаты
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
-
-        customer_email = session["customer_details"]["email"]
-        product_id = session["metadata"]["product_id"]
+        print(session)
 
     return HttpResponse(status=200)

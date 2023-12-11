@@ -1,10 +1,8 @@
-from django.contrib.auth import authenticate
 from django.test import TestCase
 from django.test.client import Client
 from django.contrib.auth import get_user_model
 
 from django.core.management import call_command
-from django.urls import reverse
 
 # from users.models import User
 from users.services import code_generator

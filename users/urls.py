@@ -18,4 +18,4 @@ urlpatterns = [
     path('user_already_exist/', UserAlreadyExistView.as_view(), name='user_already_exist'),
     path('profile/<int:pk>/', ProfileView.as_view(), name='profile'),
     path('set_subscription/', user_set_subscription, name='set_subscription'),
-    ]
+]

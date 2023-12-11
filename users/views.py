@@ -8,7 +8,7 @@ from django.views.generic import TemplateView, UpdateView, ListView
 
 from users.forms import UserRegisterForm, UserEnterCodeForm, UserProfileForm
 from users.models import User
-from users.services import code_generator, users_list, send_sms
+from users.services import code_generator, users_list
 
 
 class UserConfirmationSentView(PasswordResetDoneView):
@@ -79,6 +79,7 @@ def verify_view(request):
         user = User.objects.get(pk=pk)  # получаем пользователя
 
         # отправка смс временно отключена, код выводится в терминале
+        # необходимо сделать импорт из users.services
         # send_sms(verify_code, user.user_phone) # отправляем смс с кодом верификации пользователю
 
         print(verify_code)
